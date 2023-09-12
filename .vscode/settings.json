@@ -1,0 +1,18 @@
+{
+    "maven.terminal.useJavaHome": true,
+    "maven.executable.path": "",
+    "maven.terminal.customEnv": [
+        {
+            "environmentVariable": "JAVA_HOME",
+            "value": "C:\\Program Files\\Java\\jdk-17"
+        },
+    //     // {
+    //     //     "environmentVariable": "M2_HOME",
+    //     //     "value": ""
+    //     // },
+    //     // {
+    //     //     "environmentVariable": "M2",
+    //     //     "value": ""
+    //     // },
+    ]
+}
