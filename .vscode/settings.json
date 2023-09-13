@@ -14,5 +14,6 @@
     //     //     "environmentVariable": "M2",
     //     //     "value": ""
     //     // },
-    ]
+    ],
+    "java.dependency.packagePresentation": "hierarchical"
 }
