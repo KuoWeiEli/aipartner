@@ -1,11 +1,11 @@
 package com.owl.aipartner.service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -13,7 +13,7 @@ import com.owl.aipartner.exception.NotFoundException;
 import com.owl.aipartner.exception.UnprocessableEntityException;
 import com.owl.aipartner.model.User;
 import com.owl.aipartner.model.UserQueryParameter;
-import com.owl.aipartner.repository.UserRepository;
+import com.owl.aipartner.repository.mongo.UserRepository;
 
 @Service
 public class UserService {
@@ -27,36 +27,30 @@ public class UserService {
     }
 
     public List<User> getUsers(UserQueryParameter params) {
-        List<User> data = userRepository.findByNameIgnoreCaseLike("%" + params.getName() + "%");
-        data.sort(genSortComparator(params.getOrderBy(), params.getSortBy()));
-
-        return data;
+        return userRepository.findByAgeBetweenAndNameLikeIgnoreCase(
+                Optional.ofNullable(params.getAgeFrom()).orElse(0),
+                Optional.ofNullable(params.getAgeTo()).orElse(100),
+                Optional.ofNullable(params.getName()).orElse(""),
+                genSort(params.getOrderBy(), params.getSortBy()));
     }
 
-    private Comparator<User> genSortComparator(String orderBy, String sortBy) {
-        Comparator<User> comparator = (p1, p2) -> 0;
-        if (Objects.isNull(orderBy) || Objects.isNull(sortBy)) {
-            return comparator;
+    private Sort genSort(String orderBy, String sortBy) {
+        Sort sort = Sort.unsorted();
+        if (Objects.nonNull(orderBy) && Objects.nonNull(sortBy)) {
+            Sort.Direction direction = Sort.Direction.fromString(sortBy);
+            sort = Sort.by(direction, orderBy);
         }
 
-        if (orderBy.equalsIgnoreCase("name")) {
-            comparator = Comparator.comparing(User::getName);
-        } else if (orderBy.equalsIgnoreCase("age")) {
-            comparator = Comparator.comparing(User::getAge);
-        }
-
-        if ("desc".equalsIgnoreCase(sortBy)) {
-            return comparator.reversed();
-        }
-        return comparator;
+        return sort;
     }
 
     public User createUser(User request) {
-        Optional<User> data = userRepository.findById(request.getUserid());
+        Optional<User> data = userRepository.findById(request.getId());
         if (data.isPresent())
             throw new UnprocessableEntityException("The id of product is duplicated!");
 
-        return new User(request.getUserid(), request.getName(), request.getAge());
+        User user = new User(request.getId(), request.getName(), request.getAge());
+        return userRepository.insert(user);
     }
 
     public User updateUser(Long id, User request) {
@@ -69,7 +63,6 @@ public class UserService {
     }
 
     public void deleteUser(@PathVariable Long id) {
-        User user = getUser(id);
-        userRepository.deleteById(user.getUserid());
+        userRepository.deleteById(id);
     }
 }

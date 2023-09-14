@@ -1,6 +1,9 @@
 spring:
   output.ansi.enabled: always
 
+  # mongo
+  data.mongodb.uri: mongodb://localhost:27017/demo
+
   datasource:
     url: jdbc:h2:file:/data/demo
     username: sa
