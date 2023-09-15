@@ -1,4 +1,4 @@
-package com.owl.aipartner.model;
+package com.owl.aipartner.model.dto;
 
 import lombok.Data;
 

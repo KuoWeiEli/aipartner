@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.owl.aipartner.model.User;
-import com.owl.aipartner.model.UserQueryParameter;
+import com.owl.aipartner.model.converter.UserConverter;
+import com.owl.aipartner.model.dto.UserDTO;
+import com.owl.aipartner.model.dto.UserQueryParameter;
+import com.owl.aipartner.model.po.UserPO;
 import com.owl.aipartner.service.UserService;
 
 @RestController
@@ -28,37 +30,39 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
-        User user = userService.getUser(id);
-        return ResponseEntity.ok().body(user);
+    public ResponseEntity<UserDTO> getUser(@PathVariable("id") String id) {
+        UserPO userPO = userService.getUser(id);
+        return ResponseEntity.ok().body(UserConverter.getUserDTO(userPO));
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findUser(@ModelAttribute UserQueryParameter params) {
-        List<User> data = userService.getUsers(params);
-        return ResponseEntity.ok().body(data);
+    public ResponseEntity<List<UserDTO>> findUser(@ModelAttribute UserQueryParameter params) {
+        List<UserPO> data = userService.getUsers(params);
+
+        return ResponseEntity.ok().body(UserConverter.getUserDTOList(data));
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User request) {
-        User user = userService.createUser(request);
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO request) {
+        UserPO userPO = userService.createUser(request);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(user.getId())
+                .buildAndExpand(userPO.getId())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(user);
+        return ResponseEntity.created(uri).body(UserConverter.getUserDTO(userPO));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @RequestBody UserDTO user) {
+        UserPO userPO = userService.updateUser(id, user);
+        return ResponseEntity.ok(UserConverter.getUserDTO(userPO));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

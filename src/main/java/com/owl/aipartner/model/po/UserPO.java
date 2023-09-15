@@ -1,23 +1,19 @@
-package com.owl.aipartner.model;
+package com.owl.aipartner.model.po;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "Users")
+// @Entity
+// @Table(name = "Users")
 @Document(collection = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-    @Id
-    private Long id;
+public class UserPO {
+    private String id;
     private String name;
     private int age;
 }

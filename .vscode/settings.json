@@ -16,5 +16,10 @@
     //     // },
     ],
     "java.dependency.packagePresentation": "hierarchical",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cSpell.words": [
+        "Servlet",
+        "springframework"
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
 }

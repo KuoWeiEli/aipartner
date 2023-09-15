@@ -7,17 +7,17 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.owl.aipartner.model.User;
+import com.owl.aipartner.model.po.UserPO;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, Long> {
-    List<User> findByAgeBetweenAndNameLikeIgnoreCase(int ageFrom, int ageTo, String name, Sort sort);
+public interface UserRepository extends MongoRepository<UserPO, String> {
+    List<UserPO> findByAgeBetweenAndNameLikeIgnoreCase(int ageFrom, int ageTo, String name, Sort sort);
 
     @Query(
         value = "{'$and' : [{'age': {'$gte': ?0, '$lte': ?1}}, {'name': {'$regex': ?2, '$options': 'i'}}]}",
         sort = "{ 'age': 1, 'name': -1 }"
     )
-    List<User> findByCustomQuery(int ageFrom, int ageTo, String name);
+    List<UserPO> findByCustomQuery(int ageFrom, int ageTo, String name);
 
     @Query(
         value = "{'_id': {'$in': ?0}}",
