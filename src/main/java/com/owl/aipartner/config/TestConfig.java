@@ -26,7 +26,7 @@ public class TestConfig {
             // log.info("exists is: " + userRepository.existsByIdIn(List.of(4L, 5L)));
             // log.info("result: " + userRepository.findByCustomQuery(22, 22, "a"));
 
-            log.info(mailConfig.getHost());
+            // log.info(mailConfig.getHost());
         };
     }
 }
