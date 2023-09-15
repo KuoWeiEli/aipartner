@@ -18,8 +18,8 @@
     "java.dependency.packagePresentation": "hierarchical",
     "java.configuration.updateBuildConfiguration": "interactive",
     "cSpell.words": [
-        "Servlet",
-        "springframework"
+        "aipartner",
+        "starttls"
     ],
     "java.compile.nullAnalysis.mode": "automatic"
 }

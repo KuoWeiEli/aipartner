@@ -30,3 +30,13 @@ logging.level:
   org.springframework.jdbc.core:
     JdbcTemplate: DEBUG
     StatementCreatorUtils: TRACE
+
+
+mail:
+  host: smtp.gmail.com
+  port: 587
+  authEnabled: true
+  starttlsEnabled: true
+  protocol: smtp
+  username: your_email_address
+  password: your_email_password

@@ -11,10 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.owl.aipartner.converter.UserConverter;
 import com.owl.aipartner.exception.NotFoundException;
-import com.owl.aipartner.exception.UnprocessableEntityException;
+import com.owl.aipartner.model.dto.UserQueryParameter;
 import com.owl.aipartner.model.dto.UserRequest;
 import com.owl.aipartner.model.dto.UserResponse;
-import com.owl.aipartner.model.dto.UserQueryParameter;
 import com.owl.aipartner.model.po.User;
 import com.owl.aipartner.repository.mongo.UserRepository;
 
