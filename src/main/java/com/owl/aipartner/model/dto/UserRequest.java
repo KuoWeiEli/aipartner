@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
-    private String id;
+public class UserRequest {
     @NotEmpty
     private String name;
     @Min(0)
