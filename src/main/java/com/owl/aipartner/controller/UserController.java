@@ -23,6 +23,8 @@ import com.owl.aipartner.model.dto.UserQueryParameter;
 import com.owl.aipartner.model.po.UserPO;
 import com.owl.aipartner.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
@@ -43,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO request) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO request) {
         UserPO userPO = userService.createUser(request);
 
         URI uri = ServletUriComponentsBuilder
@@ -56,7 +58,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @RequestBody UserDTO user) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @Valid @RequestBody UserDTO user) {
         UserPO userPO = userService.updateUser(id, user);
         return ResponseEntity.ok(UserConverter.getUserDTO(userPO));
     }

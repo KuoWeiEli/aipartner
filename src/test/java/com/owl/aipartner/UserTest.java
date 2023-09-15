@@ -1,12 +1,14 @@
 package com.owl.aipartner;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -151,6 +153,28 @@ public class UserTest {
                 Assert.assertEquals(MediaType.APPLICATION_JSON_VALUE,
                                 mockHttpResp.getHeader(HttpHeaders.CONTENT_TYPE));
 
+        }
+
+        @Test
+        public void get400WhenCreateUserWithEmptyName() throws Exception {
+                JSONObject request = new JSONObject()
+                                .put("name", "")
+                                .put("age", 14);
+                mockMvc.perform(post("/users")
+                        .headers(httpHeaders)
+                        .content(request.toString()))
+                        .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        public void get400WhenReplaceUserWithTooLargeAge() throws Exception {
+                                JSONObject request = new JSONObject()
+                                .put("name", "")
+                                .put("age", 200);
+                mockMvc.perform(put("/users/" + 1)
+                        .headers(httpHeaders)
+                        .content(request.toString()))
+                        .andExpect(status().isBadRequest());
         }
 
 }
