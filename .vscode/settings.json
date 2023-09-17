@@ -19,6 +19,7 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "cSpell.words": [
         "aipartner",
+        "Flyfly",
         "starttls"
     ],
     "java.compile.nullAnalysis.mode": "automatic"

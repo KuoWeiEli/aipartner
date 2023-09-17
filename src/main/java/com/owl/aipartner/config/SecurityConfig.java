@@ -4,10 +4,13 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,6 +22,14 @@ import com.owl.aipartner.model.user.UserAuthority;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+	@Bean
+	public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setUserDetailsService(userDetailsService);
+
+		return provider;
+	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -35,12 +46,14 @@ public class SecurityConfig {
 		MvcRequestMatcher user = builder.pattern("/users/**");
 		MvcRequestMatcher getUsers = builder.pattern(HttpMethod.GET, "/users");
 		MvcRequestMatcher postUser = builder.pattern(HttpMethod.POST, "/users");
+		MvcRequestMatcher auth = builder.pattern(HttpMethod.POST, "/auth/**");
 
 		return http
 				.authorizeHttpRequests(requests -> requests
 						.requestMatchers(getUsers).hasAuthority(UserAuthority.ADMIN.name())
 						.requestMatchers(user).authenticated()
 						.requestMatchers(postUser).permitAll()
+						.requestMatchers(auth).permitAll()
 						.requestMatchers(PathRequest.toH2Console()).permitAll()
 						.anyRequest().permitAll())
 
@@ -56,10 +69,11 @@ public class SecurityConfig {
 						.ignoringRequestMatchers(
 								user,
 								postUser,
+								auth,
 								PathRequest.toH2Console()))
 
 				.formLogin(Customizer.withDefaults()) // 使用表單登錄進行身份驗證
-				.httpBasic(Customizer.withDefaults()) // 使用 HTTP 基本驗證進行身份驗證
+				.httpBasic(Customizer.withDefaults()) // 使用 HTTP 基本驗證（JSON Basic Auth）進行身份驗證
 				.build();
 	}
 }
