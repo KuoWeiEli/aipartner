@@ -4,7 +4,7 @@ import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import com.owl.aipartner.model.dto.SendMailRequest;
+import com.owl.aipartner.model.mail.SendMailRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

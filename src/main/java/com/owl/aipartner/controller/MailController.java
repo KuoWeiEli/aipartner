@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.owl.aipartner.config.MailConfig;
-import com.owl.aipartner.model.dto.SendMailRequest;
+import com.owl.aipartner.model.mail.SendMailRequest;
 import com.owl.aipartner.service.MailService;
 
 import jakarta.validation.Valid;

@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.owl.aipartner.model.dto.UserQueryParameter;
-import com.owl.aipartner.model.dto.UserRequest;
-import com.owl.aipartner.model.dto.UserResponse;
+import com.owl.aipartner.model.user.UserQueryParameter;
+import com.owl.aipartner.model.user.AppUserRequest;
+import com.owl.aipartner.model.user.AppUserResponse;
 import com.owl.aipartner.service.UserService;
 
 import jakarta.validation.Valid;
@@ -31,18 +31,18 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable("id") String id) {
+    public ResponseEntity<AppUserResponse> getUser(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(userService.getUserResponse(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> findUser(@ModelAttribute UserQueryParameter params) {
+    public ResponseEntity<List<AppUserResponse>> findUser(@ModelAttribute UserQueryParameter params) {
         return ResponseEntity.ok().body(userService.getUsersResponse(params));
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
-        UserResponse response = userService.createUser(request);
+    public ResponseEntity<AppUserResponse> createUser(@Valid @RequestBody AppUserRequest request) {
+        AppUserResponse response = userService.createUser(request);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -54,13 +54,13 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable String id, @Valid @RequestBody UserRequest user) {
-        UserResponse response = userService.updateUser(id, user);
+    public ResponseEntity<AppUserResponse> updateUser(@PathVariable String id, @Valid @RequestBody AppUserRequest user) {
+        AppUserResponse response = userService.updateUser(id, user);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<UserResponse> deleteUser(@PathVariable String id) {
+    public ResponseEntity<AppUserResponse> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

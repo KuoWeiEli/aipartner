@@ -1,4 +1,4 @@
-package com.owl.aipartner.model.dto;
+package com.owl.aipartner.model.mail;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;

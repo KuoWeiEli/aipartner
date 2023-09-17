@@ -5,35 +5,42 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.owl.aipartner.converter.UserConverter;
 import com.owl.aipartner.exception.NotFoundException;
-import com.owl.aipartner.model.dto.UserQueryParameter;
-import com.owl.aipartner.model.dto.UserRequest;
-import com.owl.aipartner.model.dto.UserResponse;
-import com.owl.aipartner.model.po.User;
+import com.owl.aipartner.exception.UnprocessableEntityException;
+import com.owl.aipartner.model.user.AppUser;
+import com.owl.aipartner.model.user.UserQueryParameter;
+import com.owl.aipartner.model.user.AppUserRequest;
+import com.owl.aipartner.model.user.AppUserResponse;
 import com.owl.aipartner.repository.mongo.UserRepository;
 
-@Service
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private User getUser(String id) {
+    public AppUser findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("無法找到使用者資料"));
+    }
+
+    private AppUser getUser(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("無法找到使用者資料"));
     }
 
-    public UserResponse getUserResponse(String id) {
+    public AppUserResponse getUserResponse(String id) {
         return UserConverter.toUserResponse(getUser(id));
     }
 
-    public List<UserResponse> getUsersResponse(UserQueryParameter params) {
-        List<User> users = userRepository.findByAgeBetweenAndNameLikeIgnoreCase(
+    public List<AppUserResponse> getUsersResponse(UserQueryParameter params) {
+        List<AppUser> users = userRepository.findByAgeBetweenAndNameLikeIgnoreCase(
                 Optional.ofNullable(params.getAgeFrom()).orElse(0),
                 Optional.ofNullable(params.getAgeTo()).orElse(100),
                 Optional.ofNullable(params.getName()).orElse(""),
@@ -53,17 +60,27 @@ public class UserService {
         return sort;
     }
 
-    public UserResponse createUser(UserRequest request) {
-        User user = UserConverter.toUser(request);
+    public AppUserResponse createUser(AppUserRequest request) {
+        Optional<AppUser> existingUser = userRepository.findByEmail(request.getEmail());
+        if (existingUser.isPresent())
+            throw new UnprocessableEntityException("Email 已被人使用！");
+
+        AppUser user = UserConverter.toUser(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return UserConverter.toUserResponse(userRepository.insert(user));
     }
 
-    public UserResponse updateUser(String id, UserRequest request) {
-        User oldUser = getUser(id);
-        User newUser = UserConverter.toUser(request);
-        newUser.setId(oldUser.getId());
+    public AppUserResponse updateUser(String id, AppUserRequest request) {
+        AppUser oldUser = getUser(id);
+        AppUser newUser = UserConverter.toUser(request);
 
+        // 新密碼與舊密碼不同時，才需要進行設定
+        if (!passwordEncoder.matches(oldUser.getPassword(), newUser.getPassword())) {
+            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        }
+
+        newUser.setId(oldUser.getId());
         return UserConverter.toUserResponse(userRepository.save(newUser));
     }
 

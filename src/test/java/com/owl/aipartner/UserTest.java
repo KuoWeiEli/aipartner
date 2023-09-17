@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.owl.aipartner.model.po.User;
+import com.owl.aipartner.model.user.AppUser;
 import com.owl.aipartner.repository.mongo.UserRepository;
 
 @RunWith(SpringRunner.class)
@@ -84,7 +84,7 @@ public class UserTest {
 
         @Test
         public void testGetUser() throws Exception {
-                User user = new User(null, "Mike", 22);
+                AppUser user = new AppUser(null, "Mike", 22);
                 userRepository.insert(user);
 
                 mockMvc.perform(get("/users/" + user.getId())
@@ -97,7 +97,7 @@ public class UserTest {
 
         @Test
         public void testReplaceUser() throws Exception {
-                User user = new User(null, "Mike", 22);
+                AppUser user = new AppUser(null, "Mike", 22);
                 userRepository.insert(user);
 
                 JSONObject request = new JSONObject()
@@ -115,7 +115,7 @@ public class UserTest {
 
         @Test(expected = RuntimeException.class)
         public void testDeleteUser() throws Exception {
-                User user = new User(null, "Mike", 22);
+                AppUser user = new AppUser(null, "Mike", 22);
                 userRepository.insert(user);
 
                 mockMvc.perform(delete("/users/" + user.getId())
@@ -128,11 +128,11 @@ public class UserTest {
 
         @Test
         public void testSearchUsersSortByNameAsc() throws Exception {
-                User u1 = new User("1", "Apple", 26);
-                User u2 = new User("2", "Banana", 100);
-                User u3 = new User("3", "Cat", 91);
-                User u4 = new User("4", "Dog", 72);
-                User u5 = new User("5", "Eagle", 51);
+                AppUser u1 = new AppUser("1", "Apple", 26);
+                AppUser u2 = new AppUser("2", "Banana", 100);
+                AppUser u3 = new AppUser("3", "Cat", 91);
+                AppUser u4 = new AppUser("4", "Dog", 72);
+                AppUser u5 = new AppUser("5", "Eagle", 51);
                 userRepository.insert(List.of(u1, u2, u3, u4, u5));
 
                 MvcResult result = mockMvc.perform(get("/users")
